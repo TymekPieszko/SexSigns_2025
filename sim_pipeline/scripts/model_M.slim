@@ -1,0 +1,75 @@
+// The model
+initialize()
+{
+	// setSeed(SEED);
+	initializeSLiMModelType("nonWF");
+	initializeTreeSeq();
+	initializeMutationType("m1", 0.5, "f", 0.0);
+	m1.convertToSubstitution = T;
+	initializeGenomicElementType("g1", m1, 1.0);
+	initializeGenomicElement(g1, 0, L-1);
+	initializeMutationRate(0);
+	initializeRecombinationRate(0);
+	source("./scripts/functions_smk.eidos");
+}
+
+// Individuals produce offspring according to fitness
+reproduction()
+{
+	K = sim.getValue("N");
+	fitness = p1.cachedFitness(NULL);
+	inds = sample(p1.individuals, N, replace=T, weights=fitness);
+	inds2 = sample(p1.individuals, N, replace=T, weights=fitness);
+
+	for (i in seqLen(K))
+	{
+		mode = sample(c('ASEX','SEX'), 1, weights=c(1-SEX_FREQ, SEX_FREQ)); // Draw the reproductive mode of an individual according to the overall frequency of sex.
+		if (mode == 'ASEX')
+		{
+			ind = inds[i];
+			gen1 = ind.genome1;
+			gen2 = ind.genome2;
+
+			tracts = draw_tracts(GC_RATE, L-1, TRACT_LEN);
+			direction_vector = get_copying_directions(tracts);
+			tracts1 = tracts[direction_vector];
+			tracts2 = tracts[!direction_vector];
+			config = sample(c(1,2), size=1, replace=T);
+			if (config==1) {
+				subpop.addRecombinant(gen1, gen2, tracts1, gen2, gen1, tracts2);
+			} else if (config==2) {
+				subpop.addRecombinant(gen2, gen1, tracts2, gen1, gen2, tracts1);
+			}
+		}
+		else if (mode == 'SEX')
+		{
+			indA = inds[i];
+			indB = inds2[i];
+			gensA = sample(c(indA.genome1, indA.genome2), 2, replace=F);
+			gensB = sample(c(indB.genome1, indB.genome2), 2, replace=F);
+			tracts1 = draw_tracts(GC_RATE, L-1, TRACT_LEN);
+			tracts2 = draw_tracts(GC_RATE, L-1, TRACT_LEN);
+			gen1 = gensA[0];
+			gen2 = gensA[1];
+			gen3 = gensB[0];
+			gen4 = gensB[1];
+			subpop.addRecombinant(gen1, gen2, tracts1, gen3, gen4, tracts2);
+		}
+
+	}
+	self.active = 0;
+}
+
+1 early()
+{
+	sim.setValue("N", N);
+	sim.addSubpop("p1", 1);
+}
+
+survival()
+{
+	// survival is independent of fitness; parents die, offspring live
+	return (individual.age == 0);
+}
+
+GENS late() { sim.treeSeqOutput(output); }

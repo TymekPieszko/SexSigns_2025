@@ -1,0 +1,37 @@
+function (integer)draw_tracts(float r, integer i_max, integer l) {
+    if (r==0.0) {
+        tracts = integer(0);
+        return tracts;
+    }
+    i = 0;
+    tracts = c();
+    while (i < i_max) {
+        d = rgeom(1, r);
+        i_start = i + d;
+        if (i_start > i_max) {
+            break;
+        }
+        l_instance = rgeom(1, 1/l);
+        // l_instance = rdunif(1, 95, 105);
+        // l_instance = 100;
+        i_end = i_start + l_instance;
+        if (i_end > i_max) {
+            break;
+        } else {
+            i = i_end;
+            tracts = c(tracts, i_start, i_end);
+        }
+    }
+    if (isNULL(tracts)) {
+        tracts = integer(0);
+    }
+    
+    return tracts;
+}
+
+function (logical)get_copying_directions(integer tracts) {
+    num_tracts = asInteger(length(tracts) / 2);
+    direction_vector = sample(c(T,F), size=num_tracts, replace=T);
+    direction_vector = repEach(direction_vector, count=2);
+    return direction_vector;
+}

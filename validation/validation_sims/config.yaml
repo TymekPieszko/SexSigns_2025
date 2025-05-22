@@ -1,0 +1,12 @@
+# SLiM params
+L: 1000000 # i.e., 1 Mb; chromosome length
+N: 1000 # Population size
+TRACT: 5000 # Mean tract length (bp), geometrically distributed
+REC_lst: # Recombination rate (per bp per generation)
+  "MP": [0.0, 1.0e-09, 3.162e-09, 1.0e-08, 3.162e-08, 1.0e-07, 3.162e-07, 1.0e-06]
+  "CF": [0.0, 1.0e-09, 3.162e-09, 1.0e-08, 3.162e-08, 1.0e-07, 3.162e-07, 1.0e-06]
+SEX_lst: [0.0] # Sex frequency 
+# BIAS_lst: [1.0, 0.1] # Degree of phasing bias: most heterzygous regions of the chromosome
+GENS: 200000 # Number of generations
+REP: 30 # Number of replicates of each scenario
+# MUT_lst: [5.0e-7] # Mutation rate (per bp per generation)

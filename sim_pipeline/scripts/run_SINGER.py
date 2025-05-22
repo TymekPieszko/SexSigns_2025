@@ -1,12 +1,11 @@
 import tskit
 from pathlib import Path
-import numpy as np
-from functions_smk import *
+from functions import *
 
 ts = Path(snakemake.input.ts)
 vcf = Path(snakemake.input.vcf)
-arg_dir = Path(snakemake.output.arg_dir)
 ts_dir = Path(snakemake.output.ts_dir)
+arg_dir = Path(str(ts_dir).replace("ts", "arg"))
 
 arg_log = Path(snakemake.log.arg_log)
 ts_log = Path(snakemake.log.ts_log)
@@ -16,20 +15,20 @@ WINDOW_LEN = int(snakemake.params.WINDOW_LEN)
 BIAS = float(snakemake.wildcards.BIAS)
 ts = tskit.load(str(ts))
 intervals = get_biased_intervals(ts, WINDOW_LEN, BIAS)
-print(intervals)
+# print(intervals)
 
 # Infer ARG params
 singer_path = "singer_master"
-Ne = "100000"
-m = "1.0e-8"
+Ne = "1000" # 3.1.SINGER_OLD: Ne = "100000"
+m = "5.0e-7" # 3.1.SINGER_OLD: m = "1.0e-8"
 n = "100"
 thin = "20"
 
 # Convert to ts params
 convert_to_tskit_path = "convert_to_tskit"  # "./convert_to_tskit.py"
 start_index = "50"
-end_index = "99"
-step = "1"
+end_index = "100"
+step = "5"
 
 for interval in intervals:
     vcf_prefix = str(vcf.parent / vcf.stem)

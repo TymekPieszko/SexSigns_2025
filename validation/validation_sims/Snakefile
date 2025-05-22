@@ -1,0 +1,50 @@
+import numpy as np
+configfile: "config.yaml"
+
+# module load Mamba/4.14.0-0
+# CLUSTER EXECUTION
+# snakemake --executor slurm -j 50 --resources threads=8 --default-resources slurm_account=biol-bdelloids slurm_partition=short --use-conda --conda-frontend mamba --rerun-incomplete --rerun-triggers mtime --latency-wait 600 --group-components simulate=8
+# snakemake --use-conda --conda-frontend mamba --conda-create-envs-only
+
+model = "CF" # Out of MP, CF and TF
+# Get params from config
+L = config["L"]
+N = config["N"]
+TRACT = config["TRACT"]
+REC_lst = config["REC_lst"][model]
+SEX_lst = config["SEX_lst"]
+GENS = config["GENS"]
+REP = config["REP"] # one value
+REP_lst = list(range(int(REP)))
+
+simulate_targets = expand("sim_output/{model}/0.ts/SEX~{SEX}/REC~{REC}/{REP}.trees", model=model, SEX=SEX_lst, REC=REC_lst, REP=REP_lst)
+
+rule all:
+    input:
+        simulate_targets
+
+rule simulate:
+    output:
+        "sim_output/{model}/0.ts/SEX~{SEX}/REC~{REC}/{REP}.trees"
+    conda:
+        "envs/slim.yaml"
+    params:
+        model = model,
+        L = L,
+        N = N,
+        TRACT = TRACT,
+        GENS = GENS
+    threads: 1
+    resources:
+        mem_mb=10000,
+        runtime=600
+    group: "simulate"
+    shell:
+        "slim "
+        "-d L={params.L} "
+        "-d N={params.N} "
+        "-d TRACT={params.TRACT} "
+        "-d GENS={params.GENS} "
+        "-d SEX={wildcards.SEX} "
+        "-d REC={wildcards.REC} "
+        "-d 'output=\"{output}\"' scripts/model_{params.model}_val.slim"

@@ -9,8 +9,15 @@ def subsample_ts(ts, ind_num):
         ind = ts.individual(ind)
         nodes.extend(ind.nodes)
     ts = ts.simplify(nodes, keep_input_roots=True)
-    return ts
+    return ts, inds
 
+def subsample_ts_to_given(ts, inds):
+    nodes = []
+    for ind in inds:
+        ind = ts.individual(ind)
+        nodes.extend(ind.nodes)
+    ts = ts.simplify(nodes, keep_input_roots=True)
+    return ts
 
 # def get_windows(L, WINDOW_LEN):
 #     windows = np.arange(0, L + WINDOW_LEN, WINDOW_LEN)
@@ -127,6 +134,15 @@ def get_biased_intervals(ts, WINDOW_LEN, BIAS):
     )  # Calc mean H_I per individual; take top BIAS proportion of windows
     index = int(len(het_windows) * BIAS)
     het_filter = np.argsort(het_windows)[-index:]
-    intervals = [[windows[i], windows[i + 1]] for i in range(len(windows) - 1)]
+    intervals = [[i, j] for i, j in zip(windows[:-1], windows[1:])]
     intervals = np.array(intervals)[het_filter]
     return intervals
+
+
+def infer_tree(fasta_f, tree_dir, threads):
+    prefix = str(tree_dir) + "/" + fasta_f.stem.split(".")[0]
+    cmd = (
+        f"module load IQ-TREE/2.2.2.6-gompi-2022b && "
+        f"iqtree2 -s {fasta_f} -m JC69 -pre {prefix} -T {threads} -redo -quiet"
+    )
+    subprocess.run(cmd, shell=True, check=True)

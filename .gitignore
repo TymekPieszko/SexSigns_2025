@@ -1,0 +1,15 @@
+**/.snakemake/
+**/__pycache__/
+**/sim_output/
+
+# simulation_pipeline
+sim_pipeline/generate_ind_files.py
+sim_pipeline/*_test/
+sim_pipeline/how_many_*
+sim_pipeline/sub_ts_*
+
+# stats
+stats/*sh
+
+# plots
+plots/*/

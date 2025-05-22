@@ -1,126 +1,140 @@
-from helper import *
 import numpy as np
 configfile: "config.yaml"
-# localrules: subsample
 
-# OPTIONALLY module load Mamba/4.14.0-0
-# CLUSTER EXECUTION
-# snakemake --executor slurm -j 50 --default-resources slurm_account=zool-barralab slurm_partition=devel --set-resources SINGER:slurm_partition=short --use-conda --conda-frontend mamba --rerun-incomplete
-# snakemake --use-conda --conda-frontend mamba --conda-create-envs-only
+# module load Mamba/4.14.0-0
 
-# Simulate
-MODEL_lst = config['MODEL_lst']
-L = config['L']
-N = config['N']
-TRACT_LEN = config['TRACT_LEN']
-# GC_RATE_lst = config['GC_RATE_lst']
-GC_RATE_min = config['GC_RATE_min']
-GC_RATE_max = config['GC_RATE_max']
-GC_RATE_num = config['GC_RATE_num']
-GC_RATE_lst = [round(x,11) for x in np.logspace(GC_RATE_min, GC_RATE_max, num=GC_RATE_num)]
-GC_RATE_lst.extend([1.0e-7, 1.0e-8])
-# GC_RATE_lst = [1.0e-6]
-print(GC_RATE_lst)
-SEX_FREQ_lst = config['SEX_FREQ_lst']
-BIAS_lst = config['BIAS_lst']
-REP_NUM = config['REP_NUM'] # one value
-REP_lst = list(range(int(REP_NUM))) # create a list
-GENS = config['GENS']
-
-# Subsample 
-MUT_RATE_lst = config['MUT_RATE_lst']
+model = "CF" # Out of MP, CF and TF
+# Get params from config
+L = config["L"]
+N = config["N"]
+TRACT = config["TRACT"]
+REC_lst = config["REC_lst"][model]
+SEX_lst = config["SEX_lst"]
+BIAS_lst = config["BIAS_lst"]
+GENS = config["GENS"]
+REP = config["REP"] # one value
+REP_lst = list(range(int(REP)))
+# REP_lst = list(range(5))
+MUT_lst = config["MUT_lst"]
 
 
-# WINDOW_NUM = int(L / WINDOW_LEN)
-simulate_targets = expand("sim_output/0.ts/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/{REP}.trees", SEX_FREQ=SEX_FREQ_lst, GC_RATE=GC_RATE_lst, REP=REP_lst)
-subsample_targets = expand("sim_output/1.sub_ts/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/{REP}.trees", SEX_FREQ=SEX_FREQ_lst, GC_RATE=GC_RATE_lst, MUT_RATE=MUT_RATE_lst, REP=REP_lst)
-# bias_targets = expand("sim_output/3.bias/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/", SEX_FREQ=SEX_FREQ_lst, GC_RATE=GC_RATE_lst, MUT_RATE=MUT_RATE_lst, BIAS=BIAS_lst, REP=REP_lst)
-SINGER_targets = expand("sim_output/3.SINGER/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/ts/", SEX_FREQ=SEX_FREQ_lst, GC_RATE=GC_RATE_lst, MUT_RATE=MUT_RATE_lst, BIAS=BIAS_lst, REP=REP_lst) 
+simulate_targets = expand("sim_output/{model}/0.ts/SEX~{SEX}/REC~{REC}/{REP}.trees", model=model, SEX=SEX_lst, REC=REC_lst, REP=REP_lst)
+subsample_targets = expand("sim_output/{model}/1.sub_ts/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.trees", model=model, SEX=SEX_lst, REC=REC_lst, MUT=MUT_lst, REP=REP_lst)
+# subsample_targets = expand("sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/", model=model, SEX=SEX_lst, REC=REC_lst, MUT=MUT_lst, REP=REP_lst)
+SINGER_targets = expand("sim_output/{model}/3.1.SINGER/SEX~{SEX}/REC~{REC}/MUT~{MUT}/BIAS~{BIAS}/{REP}/ts/", model=model, SEX=SEX_lst, REC=REC_lst, MUT=MUT_lst, BIAS=BIAS_lst, REP=REP_lst)
+IQ_TREE_targets = expand("sim_output/{model}/3.2.IQ_TREE/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/full/", model=model, SEX=SEX_lst, REC=REC_lst, MUT=MUT_lst, REP=REP_lst)
+root_prune_targets = expand("sim_output/{model}/3.2.IQ_TREE/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/sub/", model=model, SEX=SEX_lst, REC=REC_lst, MUT=MUT_lst, REP=REP_lst)
 
 rule all:
     input:
         simulate_targets,
         subsample_targets,
-        SINGER_targets
+        SINGER_targets,
+        IQ_TREE_targets,
+        root_prune_targets
 
 rule simulate:
     output:
-        "sim_output/0.ts/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/{REP}.trees"
+        "sim_output/{model}/0.ts/SEX~{SEX}/REC~{REC}/{REP}.trees"
     conda:
         "envs/slim.yaml"
     params:
+        model = model,
         L = L,
         N = N,
-        TRACT_LEN = TRACT_LEN,
+        TRACT = TRACT,
         GENS = GENS
-    threads: 8
+    threads: 1
     resources:
-        mem_mb=100000, # 100 MB
-        runtime=10 # 10 min
+        mem_mb=10000,
+        runtime=10,
+    group: "simulate"
     shell:
         "slim "
         "-d L={params.L} "
         "-d N={params.N} "
-        "-d TRACT_LEN={params.TRACT_LEN} "
+        "-d TRACT={params.TRACT} "
         "-d GENS={params.GENS} "
-        "-d SEX_FREQ={wildcards.SEX_FREQ} "
-        "-d GC_RATE={wildcards.GC_RATE} "
-        "-d 'output=\"{output}\"' scripts/asex_with_conversion_smk.slim"
+        "-d SEX={wildcards.SEX} "
+        "-d REC={wildcards.REC} "
+        "-d 'output=\"{output}\"' scripts/model_{params.model}.slim"
 
 rule subsample:
     input:
-        "sim_output/0.ts/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/{REP}.trees"
+        "sim_output/{model}/0.ts/SEX~{SEX}/REC~{REC}/{REP}.trees"
     output:
-        "sim_output/1.sub_ts/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/{REP}.trees",
-        "sim_output/2.vcf/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/{REP}.vcf" # Might need for calculating stats!
+        # "sim_output/{model}/1.sub_ts/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.trees",
+        # "sim_output/{model}/2.1.vcf/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.vcf",
+        directory("sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/")
+        # "sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/samples.txt"
     conda:
         "envs/tskit.yaml"
     params:
-        N_ANC = N,
-        REC_RATE = GC_RATE_max,
-    threads: 8
+        N_ANC = N, # For recapitation
+        L = L, # To determine REC for recapitation; 1 / L = 1 crossover per chromosome
+        WINDOW_LEN = TRACT, # For writing fastas of length TRACT
+    threads: 1
     resources:
-        mem_mb=100000, # 100 MB
-        runtime=10 # 10 min
+        mem_mb=5000,
+        runtime=2,
+    group: "subsample"
     script:
-        "scripts/subsample_smk.py"
+        "scripts/subsample_ts.py"
 
- 
-# rule bias:
-#     input:
-#         "sim_output/1.sub_ts/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/{REP}.trees"
-#     output:
-#         directory("sim_output/3.bias/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/")
-#     conda:
-#         "envs/tskit.yaml"
-#     params:
-#         WINDOW_LEN = TRACT_LEN,
-#     threads: 8
-#     resources:
-#         mem_mb=100000, # 100 MB
-#         runtime=10 # 10 min
-#     script:
-#         "scripts/bias_smk.py"
 
 rule SINGER:
     input:
-        ts = "sim_output/1.sub_ts/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/{REP}.trees",
-        vcf = "sim_output/2.vcf/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/{REP}.vcf",
-        # bias_dir = "sim_output/3.bias/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/"
+        ts = "sim_output/{model}/1.sub_ts/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.trees",
+        vcf = "sim_output/{model}/2.1.vcf/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.vcf",
+        # bias_dir = "sim_output/3.bias/SEX~{SEX}/REC~{REC}/MUT~{MUT}/BIAS~{BIAS}/{REP}/"
     output:
-        arg_dir = temp(directory("sim_output/3.SINGER/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/arg_temp/")),
-        ts_dir = directory("sim_output/3.SINGER/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/ts/")
+        # arg_dir = temp(directory("sim_output/{model}/3.1.SINGER/SEX~{SEX}/REC~{REC}/MUT~{MUT}/BIAS~{BIAS}/{REP}/arg_temp/")),
+        ts_dir = directory("sim_output/{model}/3.1.SINGER/SEX~{SEX}/REC~{REC}/MUT~{MUT}/BIAS~{BIAS}/{REP}/ts/")
     log:
-        arg_log = "sim_output/3.SINGER/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/arg.log", 
-        ts_log = "sim_output/3.SINGER/SEX_FREQ~{SEX_FREQ}/GC_RATE~{GC_RATE}/MUT_RATE~{MUT_RATE}/BIAS~{BIAS}/{REP}/ts.log"  
+        arg_log = "sim_output/{model}/3.1.SINGER/SEX~{SEX}/REC~{REC}/MUT~{MUT}/BIAS~{BIAS}/{REP}/arg.log", 
+        ts_log = "sim_output/{model}/3.1.SINGER/SEX~{SEX}/REC~{REC}/MUT~{MUT}/BIAS~{BIAS}/{REP}/ts.log"  
     conda:
         "envs/tskit.yaml"
-    threads: 8
+    threads: 1
     params:
         L = L,
-        WINDOW_LEN = TRACT_LEN,
+        WINDOW_LEN = TRACT,
     resources:
-        mem_mb=100000, # 100 MB
-        runtime=600 # 10 hours
+        mem_mb=10000, 
+        runtime=60 
+    group: "singer"
     script:
-        "scripts/SINGER_smk.py"
+        "scripts/run_SINGER.py"
+
+rule IQ_TREE:
+    input:
+        "sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/",
+    output:
+        directory("sim_output/{model}/3.2.IQ_TREE/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/full/",)
+    conda:
+        "envs/tskit.yaml"
+    threads: 1
+    resources:
+        mem_mb=5000,
+        runtime=40
+        # runtime=10
+    group: "iqtree"
+    script:
+        "scripts/run_IQ_TREE.py"
+
+rule root_prune:
+    input:
+        "sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/",
+        "sim_output/{model}/3.2.IQ_TREE/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/full/",
+    output:
+        directory("sim_output/{model}/3.2.IQ_TREE/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/sub/")
+    conda:
+        "ape"
+    threads: 1
+    resources:
+        mem_mb=5000,
+        # runtime=int(600 / 25) # 10 hours
+        runtime=2
+    group: "rootprune"
+    script:
+        "scripts/root_prune.R"

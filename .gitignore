@@ -1,3 +1,4 @@
+/tests.py
 **/.snakemake/
 **/__pycache__/
 **/sim_output/
@@ -14,4 +15,3 @@ stats/*sh
 # plots
 plots/*/
 !plots/heatmpas/
-!plots/heatmaps/**

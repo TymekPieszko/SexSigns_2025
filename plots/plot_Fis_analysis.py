@@ -13,7 +13,7 @@ obs = 0.0
 # MUT_lst = [5e-09, 5e-08, 5e-07]
 INDS_lst = [5, 10, 15]
 # combos = [(i, j) for i in MUT_lst for j in INDS_lst]
-plot_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/plots/Fis_analysis/{model}_obs_{obs}.png"
+plot_file = f"./Fis_analysis/{model}_obs_{obs}.png"
 
 
 def calc_likelihood(sim_data, obs):
@@ -46,7 +46,7 @@ fig, ax = plt.subplots(
 ax = ax.T.flatten()
 for i, INDS in enumerate(INDS_lst):
     in_name = f"Fis_{model}_mut_5e-07_inds_{INDS}"
-    data_path = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/Fis/{in_name}.txt"
+    data_path = f"../stats/Fis/{in_name}.txt"
     with open(data_path, "r") as f:
         sim_data = json.load(f)
     # print(sim_data)

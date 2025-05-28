@@ -13,3 +13,5 @@ stats/*sh
 
 # plots
 plots/*/
+!plots/heatmpas/
+!plots/heatmaps/**

@@ -10,8 +10,8 @@ from sexsigns_functions.plot import calc_class_props, plot_heatmap, params
 
 model = sys.argv[1]
 
-dir = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/LD_curves/{model}/"
-plot_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/plots/LD_curves/{model}.png"
+dir = f"../stats/LD_curves/{model}/"
+plot_file = f"./LD_curves/{model}.png"
 
 SEX_lst = [
     0.0,

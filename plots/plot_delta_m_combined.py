@@ -8,6 +8,7 @@ import json, sys
 from sexsigns_functions.plot import params
 
 # python plot_delta_m_combined.py MP
+# python plot_delta_m_combined.py CF
 model = sys.argv[1]
 in_files = [
     f"{model}_delta_m_bias_1.0_sim",
@@ -15,9 +16,8 @@ in_files = [
     f"{model}_delta_m_bias_0.1_IQ_TREE",
     f"{model}_delta_m_bias_0.1_SINGER",
 ]
-plot_file = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/plots/heatmaps/simulated/delta_m_combined_{model}.png"
-)
+plot_file = Path(f"./heatmaps/delta_m_combined_{model}.png")
+plotData_dir = f"./heatmaps/delta_m_plotData"
 if model == "MP":
     ylabels = ["5.0e-03", "5.0e-04", "5.0e-05", "5.0e-06", "0.0"]
 elif model == "CF":
@@ -32,9 +32,7 @@ fig, ax = plt.subplots(
 )
 ax = ax.T.flatten()
 for i, in_file in enumerate(in_files):
-    sim_data = (
-        f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/delta_m/{in_file}.txt"
-    )
+    sim_data = f"../stats/delta_m/{in_file}.txt"
     print(sim_data)
     with open(sim_data, "r") as f:
         sim_data = json.load(f)
@@ -45,8 +43,15 @@ for i, in_file in enumerate(in_files):
     }
     means = pd.DataFrame(means).iloc[::-1]
     means = means.iloc[:, :-1]
-    print(means)
-    sns.heatmap(means, cmap="plasma", annot=True, ax=ax[i])
+    data_file = f"{plotData_dir}/{in_file}.csv"
+    if not Path(data_file).exists():
+        means.to_csv(
+            data_file,
+            index=True,
+            header=True,
+            float_format="%.6f",
+        )
+    sns.heatmap(means, cmap="plasma", annot=False, ax=ax[i])
     ax[i].set_title(f"{in_file}", fontsize=params["title_font"], pad=16)
     ax[i].set_xticks(
         ticks=[0.5, 1.5, 3.5, 5.5, 7.5, 9.5],

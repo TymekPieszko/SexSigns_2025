@@ -7,8 +7,8 @@ from datetime import datetime
 import json, sys
 from sexsigns_functions.plot import params
 
-# python plot_stats_combined_per_model.py MP
-# python plot_stats_combined_per_model.py CF
+# python plot_stats_combined.py MP
+# python plot_stats_combined.py CF
 model = sys.argv[1]
 in_files = [
     f"Hi_{model}_mut_5e-07_inds_100",
@@ -16,9 +16,8 @@ in_files = [
     f"LD_0-1000_{model}_mut_5e-07_inds_100",
     # f"LD_9000-10000_{model}_mut_5e-07_inds_100",
 ]
-plot_file = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/plots/heatmaps/simulated/stats_combined_{model}.png"
-)
+plot_file = Path(f"./heatmaps/stats_combined_{model}.png")
+plotData_dir = f"./heatmaps/stats_plotData"
 nrows = 1
 ncols = len(in_files)
 fig, ax = plt.subplots(
@@ -29,7 +28,7 @@ fig, ax = plt.subplots(
 )
 ax = ax.T.flatten()
 for i, in_file in enumerate(in_files):
-    sim_data = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/{in_file.split(f'_{model}')[0]}/{in_file}.txt"
+    sim_data = f"../stats/{in_file.split(f'_{model}')[0]}/{in_file}.txt"
     print(sim_data)
     with open(sim_data, "r") as f:
         sim_data = json.load(f)
@@ -39,7 +38,14 @@ for i, in_file in enumerate(in_files):
     }
     means = pd.DataFrame(means).iloc[::-1]
     means = means.iloc[:, :-1]
-    # print(means)
+    data_file = f"{plotData_dir}/{in_file}.csv"
+    if not Path(data_file).exists():
+        means.to_csv(
+            data_file,
+            index=True,
+            header=True,
+            float_format="%.6f",
+        )
     sns.heatmap(means, cmap="plasma", annot=False, ax=ax[i])
     ax[i].set_title(f"{in_file}", fontsize=params["title_font"], pad=16)
     ax[i].set_xticks(

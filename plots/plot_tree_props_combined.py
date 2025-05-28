@@ -9,10 +9,10 @@ from datetime import datetime
 from sexsigns_functions.plot import calc_class_props, params
 
 # python plot_tree_props_combined.py MP
+# python plot_tree_props_combined.py CF
 model = sys.argv[1]
-plot_file = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/plots/heatmaps/simulated/tree_props_combined_{model}.png"
-)
+plot_file = Path(f"./heatmaps/tree_props_combined_{model}.png")
+plotData_dir = f"./heatmaps/tree_props_plotData"
 in_files = [
     f"{model}_sim_1.0",
     f"{model}_sim_0.1",
@@ -36,7 +36,7 @@ fig, ax = plt.subplots(
 ax = ax.T.flatten()
 for i, combo in enumerate(combos):
     in_file, tree = combo
-    sim_data = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/tree_composition/{in_file}.txt"
+    sim_data = f"../stats/tree_composition/{in_file}.txt"
     with open(sim_data, "r") as f:
         sim_data = json.load(f)
     tree_props = {
@@ -52,6 +52,14 @@ for i, combo in enumerate(combos):
     tree_props.sort_index(axis=0, inplace=True)
     tree_props.sort_index(axis=1, inplace=True)
     tree_props = tree_props.iloc[::-1, :-1]
+    data_file = f"{plotData_dir}/{in_file}_{tree}.csv"
+    if not Path(data_file).exists():
+        tree_props.to_csv(
+            data_file,
+            index=True,
+            header=True,
+            float_format="%.6f",
+        )
     vmax = 1.0
     if tree == "S":
         vmax = 0.5

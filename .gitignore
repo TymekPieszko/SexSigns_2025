@@ -8,6 +8,7 @@ sim_pipeline/generate_ind_files.py
 sim_pipeline/*_test/
 sim_pipeline/how_many_*
 sim_pipeline/sub_ts_*
+sim_pipeline/scripts/model_TF.slim
 
 # stats
 stats/*sh

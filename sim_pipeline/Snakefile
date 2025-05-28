@@ -1,7 +1,18 @@
 import numpy as np
 configfile: "config.yaml"
 
+# Install environments with Mamba
 # module load Mamba/4.14.0-0
+
+# Choose a model to run
+model = "MP" # MP or CF
+
+### The pipeline consists of the following steps:
+# Run simulations (rule simulate).
+# Subsample the simulated genealogies to 2 target individuals (+ output other files for downstream processing); use pyslim for recapitation and msprime to overlay mutations (rule subsample).
+# Reconstruct ARGs for the target 2 individuals with SINGER (rule SINGER). 
+# Reconstruct genome-wide trees for the target 2 individuals with IQ-TREE (rules IQ_TREE + root_prune). 
+
 
 model = "CF" # Out of MP, CF and TF
 # Get params from config
@@ -63,10 +74,10 @@ rule subsample:
     input:
         "sim_output/{model}/0.ts/SEX~{SEX}/REC~{REC}/{REP}.trees"
     output:
-        # "sim_output/{model}/1.sub_ts/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.trees",
-        # "sim_output/{model}/2.1.vcf/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.vcf",
-        directory("sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/")
-        # "sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/samples.txt"
+        "sim_output/{model}/1.sub_ts/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.trees", # 2 target inds
+        "sim_output/{model}/2.1.vcf/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}.vcf", # 2 target inds
+        directory("sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/") # Directory to store fasta files; 100 inds each (including 2 target inds)
+        "sim_output/{model}/2.2.fasta/SEX~{SEX}/REC~{REC}/MUT~{MUT}/{REP}/samples.txt" # Indices of the 2 target inds in the fasta files
     conda:
         "envs/tskit.yaml"
     params:

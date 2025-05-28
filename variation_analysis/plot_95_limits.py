@@ -58,12 +58,8 @@ stats_pretty = [
     r"$\Delta_m$" + " + IQ_TREE",
     r"$\Delta_m$" + " + SINGER",
 ]
-in_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/variation_analysis/95_limits_SEX_{target_sex}_{model}/"
-)
-plot_file = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/variation_analysis/plots/95_limits_SEX_{target_sex}_{model}.png"
-)
+in_dir = Path(f"./95_limits_SEX_{target_sex}_{model}/")
+plot_file = Path(f"./plots/95_limits_SEX_{target_sex}_{model}.png")
 ########################################
 colors = plt.cm.viridis(np.linspace(0, 1, 8))
 print(colors)

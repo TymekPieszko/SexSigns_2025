@@ -1,6 +1,6 @@
 ### Predictability of sex rate from different statistics
 model <- "MP" # Choose from "MP", "CF"
-sim <- read.delim(paste0("/data/biol-bdelloids/scro4331/SexSigns_2025/stats/collected/", model, "_collected.tsv"), sep = "\t")
+sim <- read.delim(paste0("../stats/collected/", model, "_collected.tsv"), sep = "\t")
 # colSums(is.na(sim)) # check for NAs
 sim <- na.omit(sim)
 

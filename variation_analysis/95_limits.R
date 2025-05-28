@@ -1,6 +1,6 @@
 model <- "MP" # Choose from "MP", "CF"
 target_sex <- 0.0 # Choose from 0.001, 0.0
-sim <- read.delim(paste0("/data/biol-bdelloids/scro4331/SexSigns_2025/stats/collected/", model, "_collected.tsv"), sep = "\t")
+sim <- read.delim(paste0("../stats/collected/", model, "_collected.tsv"), sep = "\t")
 sim <- na.omit(sim)
 # sim$SEX2 <- sim$SEX
 # sim$SEX2[sim$SEX2 == 0] <- 1e-6

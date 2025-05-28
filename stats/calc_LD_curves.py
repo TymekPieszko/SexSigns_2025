@@ -12,7 +12,7 @@ N_ANC = 1000
 REC_ANC = 1.0e-6
 MUT = 5e-7
 ts_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/0.ts/"
+    f"../sim_pipeline/sim_output/{model}/0.ts/"
 )
 
 windows = np.arange(0, 100000, 1000)
@@ -21,7 +21,7 @@ for dir in ts_dir.glob("SEX~*/REC~*"):
     SEX = float(dir.parts[-2].split("~")[1])
     # if SEX != 0.0:
     #     continue
-    out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/LD_curves/{model}/SEX_{SEX}_REC_{REC}.txt"
+    out_file = f"./LD_curves/{model}/SEX_{SEX}_REC_{REC}.txt"
     reps = []
     for ts_file in tqdm.tqdm(dir.glob("*.trees")):
         ts = tskit.load(str(ts_file))

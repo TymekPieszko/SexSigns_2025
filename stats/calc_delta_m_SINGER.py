@@ -12,10 +12,10 @@ import numpy as np
 model = sys.argv[1]
 bias = float(sys.argv[2])
 ts_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/3.1.SINGER/"
+    f"../sim_pipeline/sim_output/{model}/3.1.SINGER/"
 )
-checkpoint_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/delta_m/{model}_delta_m_bias_{bias}_SINGER.pkl"
-out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/delta_m/{model}_delta_m_bias_{bias}_SINGER.txt"
+checkpoint_file = f"./delta_m/{model}_delta_m_bias_{bias}_SINGER.pkl"
+out_file = f"./delta_m/{model}_delta_m_bias_{bias}_SINGER.txt"
 
 if Path(checkpoint_file).exists():
     with open(checkpoint_file, "rb") as f:

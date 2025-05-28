@@ -14,9 +14,9 @@ bias = float(sys.argv[2])
 window = 5000
 
 ts_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/1.sub_ts/"
+    f"../sim_pipeline/sim_output/{model}/1.sub_ts/"
 )
-out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/tree_composition/{model}_sim_{bias}.txt"
+out_file = f"./tree_composition/{model}_sim_{bias}.txt"
 
 
 total_dict = defaultdict(dict)

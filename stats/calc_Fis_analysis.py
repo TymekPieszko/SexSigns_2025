@@ -14,13 +14,13 @@ INDS_lst = [5, 10, 15]
 MUT_lst = [5e-09, 5e-08, 5e-07]
 combos = [(i, j) for i in INDS_lst for j in MUT_lst]
 ts_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/0.ts/"
+    f"../sim_pipeline/sim_output/{model}/0.ts/"
 )
 
 for combo in combos:
     INDS = combo[0]
     MUT = combo[1]
-    out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/Fis/Fis_{model}_mut_{MUT}_inds_{INDS}.txt"
+    out_file = f"./Fis/Fis_{model}_mut_{MUT}_inds_{INDS}.txt"
     total_reps = defaultdict(dict)
     for dir in ts_dir.glob("SEX~*/REC~*"):
         REC = float(dir.parts[-1].split("~")[1])

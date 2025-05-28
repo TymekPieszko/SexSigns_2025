@@ -11,9 +11,9 @@ import numpy as np
 model = sys.argv[1]
 bias = float(sys.argv[2])
 ts_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/3.1.SINGER/"
+    f"../sim_pipeline/sim_output/{model}/3.1.SINGER/"
 )
-out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/delta_m/{model}_delta_m_bias_{bias}_SINGER_stats.txt"
+out_file = f"./delta_m/{model}_delta_m_bias_{bias}_SINGER_stats.txt"
 
 total_reps = defaultdict(dict)
 for dir in ts_dir.glob(f"SEX~*/REC~*/MUT~5e-07/BIAS~{bias}"):

@@ -13,12 +13,12 @@ bias = float(sys.argv[2])
 window = 5000
 
 iqtree_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/3.2.IQ_TREE/"
+    f"../sim_pipeline/sim_output/{model}/3.2.IQ_TREE/"
 )
-ts_dir = f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/1.sub_ts/"
-fasta_dir = f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/2.2.fasta/"
-checkpoint_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/tree_composition/{model}_IQ_TREE_{bias}.pkl"
-out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/tree_composition/{model}_IQ_TREE_{bias}.txt"
+ts_dir = f"../sim_pipeline/sim_output/{model}/1.sub_ts/"
+fasta_dir = f"../sim_pipeline/sim_output/{model}/2.2.fasta/"
+checkpoint_file = f"./tree_composition/{model}_IQ_TREE_{bias}.pkl"
+out_file = f"./tree_composition/{model}_IQ_TREE_{bias}.txt"
 
 
 if Path(checkpoint_file).exists():

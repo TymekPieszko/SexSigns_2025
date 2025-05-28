@@ -8,9 +8,9 @@ import numpy as np
 model = sys.argv[1]
 bias = float(sys.argv[2])
 ts_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/3.1.SINGER/"
+    f"../sim_pipeline/sim_output/{model}/3.1.SINGER/"
 )
-out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/singer_errors.txt"
+out_file = f"./SINGER_errors/{model}_errors.txt"
 
 total_reps = defaultdict(dict)
 for dir in ts_dir.glob(f"SEX~*/REC~*/MUT~5e-07/BIAS~{bias}"):
@@ -29,4 +29,4 @@ print(total_reps)
 with open(out_file, "w") as f:
     for SEX in total_reps.keys():
         for REC in total_reps[SEX].keys():
-            f.write(f"{SEX} {REC} {total_reps[SEX][REC] / 200}\n")
+            f.write(f"{SEX}\t{REC}\t{total_reps[SEX][REC] / 200}\n")

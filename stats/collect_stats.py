@@ -10,9 +10,9 @@ import json
 
 # python collect_stats.py MP
 model = sys.argv[1]
-stats_dir = Path(f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats")
+stats_dir = Path(f".")
 out_file = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/collected/{model}_collected.tsv"
+    f"./collected/{model}_collected.tsv"
 )
 # 2inds - sample 2 inds per sim to caluclate Hi, Fis and LD_0-1000
 # dv2 - use a different version of delta_m

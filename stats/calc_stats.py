@@ -16,9 +16,9 @@ N_ANC = 1000
 REC_ANC = 1.0e-6
 MUT = 5e-07
 ts_dir = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/sim_pipeline/sim_output/{model}/0.ts/"
+    f"../sim_pipeline/sim_output/{model}/0.ts/"
 )
-out_file = f"/data/biol-bdelloids/scro4331/SexSigns_2025/stats/{stat}/{stat}_{model}_mut_{MUT}_inds_{NUM_INDS}.txt"
+out_file = f"./{stat}/{stat}_{model}_mut_{MUT}_inds_{NUM_INDS}.txt"
 
 total_reps = defaultdict(dict)
 for dir in ts_dir.glob("SEX~*/REC~*"):

@@ -7,6 +7,7 @@ import json, sys
 from datetime import datetime
 from sexsigns_functions.plot import params
 
+# python plot_95_limits.py MP 0
 # python plot_95_limits.py MP 0.001
 model = sys.argv[1]
 target_sex = sys.argv[2]
@@ -138,4 +139,4 @@ fig.text(
 fig.text(0.5, 0.01, r"$\sigma$", ha="center", fontsize=68)
 plt.tight_layout(rect=(0.04, 0.04, 1, 1))
 plt.subplots_adjust(hspace=0.22, wspace=0.06)
-plt.savefig(plot_file)
+plt.savefig(plot_file, dpi=320)

@@ -128,4 +128,4 @@ for i in [0, 1, 2]:
     ax[i].set_xlabel(r"$\gamma$", fontsize=params["label_font"], labelpad=16)
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.1, wspace=0.05)
-plt.savefig(plot_file)
+plt.savefig(plot_file, dpi=320)

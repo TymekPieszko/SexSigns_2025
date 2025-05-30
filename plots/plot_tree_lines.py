@@ -6,7 +6,9 @@ import sys
 from sexsigns_functions.plot import calc_class_props
 import matplotlib.pyplot as plt
 
+# python plot_tree_lines.py MP MP_sim_1.0 MP_sim_0.1 S
 # python plot_tree_lines.py MP MP_sim_0.1 MP_IQ_TREE_0.1 S
+# python plot_tree_lines.py MP MP_sim_0.1 MP_SINGER_0.1 S
 model = sys.argv[1]
 tree = sys.argv[4]
 if tree == "C":
@@ -38,7 +40,7 @@ elif model == "CF":
         "1.6e-01",
     ][::-1]
 plot_file = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/plots/tree_composition/{sys.argv[2]}_{sys.argv[3]}_{tree}_lines.png"
+    f"/data/biol-bdelloids/scro4331/SexSigns_2025/plots/tree_prop_lines/{sys.argv[2]}_{sys.argv[3]}_{tree}_lines.png"
 )
 REC_lst = [0.0, 1.0e-09, 3.162e-09, 1.0e-08, 3.162e-08, 1.0e-07, 3.162e-07, 1.0e-06][
     ::-1
@@ -138,5 +140,4 @@ fig.text(
     fontsize=26,
 )
 plt.tight_layout(rect=(0.03, 0.03, 1, 1))
-plt.savefig(plot_file)
-plt.close()
+plt.savefig(plot_file, dpi=320)

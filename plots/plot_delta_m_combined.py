@@ -86,4 +86,4 @@ plt.suptitle(
 )
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.18)
-plt.savefig(plot_file)
+plt.savefig(plot_file, dpi=320)

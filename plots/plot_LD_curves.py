@@ -104,5 +104,5 @@ fig.text(0.5, 0.01, "Distance (bp)", ha="center", fontsize=params["label_font"])
 # for i in [1, 3, 5]:
 #     ax[i].set_xlabel(r"$\mathit{\sigma}$", fontsize=params["label_font"], labelpad=16)
 plt.tight_layout(rect=(0.04, 0.04, 1, 1))
-plt.savefig(plot_file)
+plt.savefig(plot_file, dpi=320)
 plt.close()

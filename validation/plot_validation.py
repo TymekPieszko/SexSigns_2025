@@ -13,10 +13,8 @@ TRACT = 5000
 MUT = 5e-07
 window_length = 10000
 
-sim_data = f"/data/biol-bdelloids/scro4331/SexSigns_2025/validation/{in_name}.txt"
-plot_file = Path(
-    f"/data/biol-bdelloids/scro4331/SexSigns_2025/validation/{in_name}.png"
-)
+sim_data = f"./{in_name}.txt"
+plot_file = Path(f"./{in_name}.png")
 
 with open(sim_data, "r") as f:
     sim_data = json.load(f)
@@ -83,5 +81,5 @@ for i, combo in enumerate(combos):
         ax[i].set_xlabel("Position (bp)", fontsize=12, labelpad=0.5)
 
 plt.tight_layout()
-plt.savefig(plot_file)
+plt.savefig(plot_file, dpi=320)
 plt.close()

@@ -16,3 +16,6 @@ stats/*sh
 # plots
 plots/*/
 !plots/heatmpas/
+!plots/tree_prop_lines/
+!plots/Fis_analysis/
+!plots/LD_curves/

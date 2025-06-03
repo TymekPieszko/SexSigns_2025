@@ -50,9 +50,9 @@ def calc_likelihood(sim_data, obs):
         index=list(sim_data[list(sim_data.keys())[0]].keys())[::-1],
     )
     print(likelihoods)
-    for i, REC_RATE in enumerate(likelihoods.index):
-        for j, SEX_FREQ in enumerate(likelihoods.columns):
-            print(REC_RATE, SEX_RATE)
+    for i, REC in enumerate(likelihoods.index):
+        for j, SEX in enumerate(likelihoods.columns):
+            print(REC, SEX_RATE)
             mean = np.mean(sim_data[str(SEX_FREQ)][str(REC_RATE)])
             std = np.std(sim_data[str(SEX_FREQ)][str(REC_RATE)])
             likelihood = stats.norm.pdf(obs, loc=mean, scale=std)

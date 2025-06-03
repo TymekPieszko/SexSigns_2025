@@ -51,6 +51,7 @@ for i, INDS in enumerate(INDS_lst):
         sim_data = json.load(f)
     # print(sim_data)
     likelihoods = calc_likelihood(sim_data, obs).astype(float)[::-1]
+    print(likelihoods)
     aic = likelihoods.transform(calc_aic, n_params=3)
     aic = aic.to_numpy()
     delta_aic = aic - np.min(aic)

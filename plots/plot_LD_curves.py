@@ -25,7 +25,6 @@ SEX_lst = [
     3.162e-02,
     0.1,
     3.162e-01,
-    1.0,
 ]
 REC_lst = [0.0, 1.0e-09, 3.162e-09, 1.0e-08, 3.162e-08, 1.0e-07, 3.162e-07, 1.0e-06][
     ::-1
@@ -95,12 +94,12 @@ for i, combo in enumerate(combos):
 fig.text(
     0.01,
     0.5,
-    r"$\mathit{R^2}$",
+    r"$\mathit{r^2}$",
     va="center",
     rotation="vertical",
     fontsize=params["label_font"],
 )
-fig.text(0.5, 0.01, "Distance (bp)", ha="center", fontsize=params["label_font"])
+fig.text(0.55, 0.01, "Distance (bp)", ha="center", fontsize=params["label_font"])
 # for i in [1, 3, 5]:
 #     ax[i].set_xlabel(r"$\mathit{\sigma}$", fontsize=params["label_font"], labelpad=16)
 plt.tight_layout(rect=(0.04, 0.04, 1, 1))

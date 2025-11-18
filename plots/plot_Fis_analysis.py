@@ -52,7 +52,7 @@ for i, INDS in enumerate(INDS_lst):
     # print(sim_data)
     likelihoods = calc_likelihood(sim_data, obs).astype(float)[::-1]
     print(likelihoods)
-    aic = likelihoods.transform(calc_aic, n_params=3)
+    aic = likelihoods.transform(calc_aic, n_params=1)
     aic = aic.to_numpy()
     delta_aic = aic - np.min(aic)
     rel_likelihoods = np.exp(-0.5 * delta_aic)
@@ -67,6 +67,15 @@ for i, INDS in enumerate(INDS_lst):
         linewidth=4,
         markersize=8,
     )
+    ax[i].axvline(
+        x=5,
+        ymin=0,
+        ymax=aic_weights[5],
+        linestyle="--",
+        linewidth=5,
+        color="red",
+        alpha=0.4,
+    )
     top_indices = np.argsort(aic_weights)[-3:]
     # for x_val, y_val in zip(likelihoods.index, aic_weights):
     #     ax[i].annotate(
@@ -77,7 +86,7 @@ for i, INDS in enumerate(INDS_lst):
     #         ha="center",
     #         fontsize=12,
     #     )
-    ax[i].set_title(f"n = {str(INDS)}", fontsize=28)
+    ax[i].set_title(f"n = {str(INDS)}", fontsize=36)
     if model == "MP":
         labels = [
             "0.0",
@@ -124,9 +133,9 @@ for i, INDS in enumerate(INDS_lst):
     #     if total >= 0.9:
     #         break
     # print(f"90% weight range: {min(covered)} to {max(covered)}")
-ax[0].set_ylabel(r"$A_{\mathit{w}}$", fontsize=params["label_font"], labelpad=16)
+ax[0].set_ylabel(r"$\mathit{w}$", fontsize=params["label_font"], labelpad=16)
 for i in [0, 1, 2]:
     ax[i].set_xlabel(r"$\gamma$", fontsize=params["label_font"], labelpad=16)
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.1, wspace=0.05)
-plt.savefig(plot_file, dpi=320)
+plt.savefig(plot_file, dpi=400)

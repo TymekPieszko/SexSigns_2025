@@ -4,7 +4,7 @@ import scipy.spatial.distance as ssd
 import gzip
 import subprocess
 from Bio import SeqIO
-
+import allel
 
 def subsample_ts(ts, ind_num):
     inds = np.random.choice(ts.num_individuals, size=ind_num, replace=False)
@@ -40,20 +40,24 @@ def calc_hi_windows(ts, window_length):
     return hi_windows
 
 
-def calc_fis(ts):
-    fis_lst = []
-    for var in ts.variants():
-        gts = var.genotypes
-        if set(gts) != {0, 1}:  # Only segregating, bi-allelic sites
-            continue
-        p = np.mean(gts)
-        q = 1 - p
-        hexp = 2 * p * q
-        hobs = sum(a1 != a2 for a1, a2 in zip(gts[::2], gts[1::2])) / (len(gts) / 2)
-        fis = 1 - hobs / hexp
-        fis_lst.append(fis)
-    return np.mean(fis_lst)
+# def calc_fis(ts):
+#     fis_lst = []
+#     for var in ts.variants():
+#         gts = var.genotypes
+#         if set(gts) != {0, 1}:  # Only segregating, bi-allelic sites
+#             continue
+#         p = np.mean(gts)
+#         q = 1 - p
+#         hexp = 2 * p * q
+#         hobs = sum(a1 != a2 for a1, a2 in zip(gts[::2], gts[1::2])) / (len(gts) / 2)
+#         fis = 1 - hobs / hexp
+#         fis_lst.append(fis)
+#     return np.mean(fis_lst)
 
+def calc_fis(ts):
+    genos = allel.HaplotypeArray(ts.genotype_matrix()).to_genotypes(ploidy=2)
+    fis = np.nanmean(allel.inbreeding_coefficient(genos))
+    return fis
 
 def calc_ld_ratio(ts, d1, d2):
     # Delete sites with > 1 mutation

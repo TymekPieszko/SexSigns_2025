@@ -1,5 +1,5 @@
 from pathlib import Path
-from validation_functions import *
+from functions_val import *
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -14,7 +14,9 @@ n_lst = [
     10,
 ]  # Mean of the Poisson-distributed number of crossovers
 
-plot_file = Path(f"/data/biol-bdelloids/scro4331/SexSigns_2025/validation/test.png")
+plot_file = Path(
+    f"/data/biol-bdelloids/scro4331/SexSigns_2025/validation/model_comparison.png"
+)
 
 fig, ax = plt.subplots(figsize=(10, 6))
 plt.axhline(y=1, color="red", linewidth=2)

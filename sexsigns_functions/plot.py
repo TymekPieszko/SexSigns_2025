@@ -97,6 +97,7 @@ def calc_class_props(tree_dict):
 def plot_heatmap(
     df,
     figsize,
+    cmap,
     plot_file,
     title,
     xlab,
@@ -109,7 +110,7 @@ def plot_heatmap(
     annot,
 ):
     plt.figure(figsize=figsize)
-    ax = sns.heatmap(df, cmap="plasma", vmin=vmin, vmax=vmax, annot=annot)
+    ax = sns.heatmap(df, cmap=cmap, vmin=vmin, vmax=vmax, annot=annot)
     plt.ylabel(ylab, fontsize=label_font, labelpad=16)
     plt.xlabel(xlab, fontsize=label_font, labelpad=16)
     plt.xticks(
@@ -120,7 +121,7 @@ def plot_heatmap(
     )
     plt.yticks(
         ticks=[0.5, 2.5, 4.5, 6.5, 7.5],
-        labels=["0.0", "1e-09", "1e-08", "1e-07", "1e-06"][::-1],
+        labels=["5.0e-03", "5.0e-04", "5.0e-05", "5.0e-06", "0.0"],
         fontsize=tick_font,
         rotation=0,
     )
@@ -134,11 +135,7 @@ def plot_heatmap(
 params = {
     "xfigsize": 14,
     "yfigsize": 10,
-    "label_font": 44,
-    "tick_font": 26,
+    "label_font": 64,
+    "tick_font": 35,
     "title_font": 20,
 }
-
-# See if there is a reason to add this here!!!
-# def calc_gamma(pos, REC):
-#     return (1 / 3) * (1 - np.exp(-1.5 * pos * REC))

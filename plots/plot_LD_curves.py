@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 import sys
-from datetime import datetime
+from matplotlib.ticker import MaxNLocator
 from sexsigns_functions.plot import calc_class_props, plot_heatmap, params
 
 # python plot_LD_curves.py MP
@@ -60,15 +60,26 @@ ax = ax.T.flatten()
 for i, combo in enumerate(combos):
     SEX = combo[0]
     REC = combo[1]
+    print(SEX, REC)
     r2_windows = np.loadtxt(f"{dir}/SEX_{SEX}_REC_{REC}.txt")
     ax[i].plot(r2_windows[:, 0], r2_windows[:, 1], color="black")
     if model == "MP":
         j = 0
     elif model == "CF":
         j = 1
-    ax[i].set_title(f"$\\sigma$={SEX}, $\\gamma$={gamma_dict[REC][j]}")
+    ax[i].set_title(
+        f"$\\sigma$={SEX}, $\\gamma$={gamma_dict[REC][j]}", fontsize=14, pad=10
+    )
     ax[i].set_xticks(np.arange(0, 100001, 10000))
-    ax[i].set_xticklabels(["0", "", "", "", "", "", "", "", "", "", "100 kb"])
+    ax[i].set_xticklabels(
+        ["0", "", "", "", "", "", "", "", "", "", "100 kb"], fontsize=15
+    )
+    ax[i].tick_params(axis="y", labelsize=15)
+    y_span = max(r2_windows[:, 1]) - min(r2_windows[:, 1])
+    ax[i].yaxis.set_major_locator(MaxNLocator(nbins=4))
+
+    # print(np.)
+    # ax[i].set_yticks()
     # group_size = 5
     # x_means = []
     # y_means = []
@@ -97,11 +108,11 @@ fig.text(
     r"$\mathit{r^2}$",
     va="center",
     rotation="vertical",
-    fontsize=params["label_font"],
+    fontsize=38,
 )
-fig.text(0.55, 0.01, "Distance (bp)", ha="center", fontsize=params["label_font"])
+fig.text(0.55, 0.01, "Distance (bp)", ha="center", fontsize=38)
 # for i in [1, 3, 5]:
 #     ax[i].set_xlabel(r"$\mathit{\sigma}$", fontsize=params["label_font"], labelpad=16)
 plt.tight_layout(rect=(0.04, 0.04, 1, 1))
-plt.savefig(plot_file, dpi=320)
+plt.savefig(plot_file, dpi=240)
 plt.close()

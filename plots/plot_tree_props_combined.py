@@ -68,25 +68,25 @@ for i, combo in enumerate(combos):
     ax[i].set_xticks(
         ticks=[0.5, 1.5, 3.5, 5.5, 7.5, 9.5],
         labels=["0.0", "1e-05", "1e-04", "1e-03", "1e-02", "1e-01"],
-        fontsize=params["tick_font"],
+        fontsize=40,
         rotation=45,
     )
     ax[i].set_yticks(
         ticks=[0.5, 2.5, 4.5, 6.5, 7.5],
         labels=ylabels,
-        fontsize=params["tick_font"],
+        fontsize=40,
         rotation=0,
     )
     colorbar = ax[i].collections[0].colorbar
-    colorbar.ax.tick_params(labelsize=params["tick_font"])
+    colorbar.ax.tick_params(labelsize=40)
 
 for i in range(3):
-    ax[i].set_ylabel(r"$\gamma$", fontsize=56, labelpad=16)
+    ax[i].set_ylabel(r"$\gamma$", fontsize=66, labelpad=16)
 for i in [2, 5, 8, 11]:
-    ax[i].set_xlabel(r"$\sigma$", fontsize=56, labelpad=16)
-plt.suptitle(
-    f"{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}", fontsize=params["title_font"]
-)
+    ax[i].set_xlabel(r"$\sigma$", fontsize=66, labelpad=16)
+# plt.suptitle(
+#     f"{datetime.today().strftime('%Y-%m-%d %H:%M:%S')}", fontsize=params["title_font"]
+# )
 plt.tight_layout()
 plt.subplots_adjust(hspace=0.18)
-plt.savefig(plot_file, dpi=200)
+plt.savefig(plot_file, dpi=240)
